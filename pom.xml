@@ -21,17 +21,17 @@
 		<jacoco-plugin.version>0.8.3</jacoco-plugin.version>
 	</properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jacoco</groupId>
-				<artifactId>org.jacoco.agent</artifactId>
-				<classifier>runtime</classifier>
-				<scope>runtime</scope>
-				<version>${jacoco-plugin.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+<!--	<dependencyManagement>-->
+<!--		<dependencies>-->
+<!--			<dependency>-->
+<!--				<groupId>org.jacoco</groupId>-->
+<!--				<artifactId>org.jacoco.agent</artifactId>-->
+<!--				<classifier>runtime</classifier>-->
+<!--				<scope>runtime</scope>-->
+<!--				<version>${jacoco-plugin.version}</version>-->
+<!--			</dependency>-->
+<!--		</dependencies>-->
+<!--	</dependencyManagement>-->
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
