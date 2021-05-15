@@ -37,7 +37,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
-
+		<!-- either have: `prepare-agent` execution or `org.jacoco.agent` dependency -->
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>org.jacoco.agent</artifactId>
+			<classifier>runtime</classifier>
+			<version>0.8.3</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -94,24 +101,27 @@
 				<version>${jacoco-plugin.version}</version>
 				<executions>
 
-<!--					Below is no longer executed even when uncommented out -->
-<!--					Is now needed for JaCoCo build to pass-->
-					<execution>
-						<id>jacoco-prepare-agent</id>
-						<goals><goal>prepare-agent</goal></goals>
-					</execution>
+<!--					either have: `prepare-agent` execution or `org.jacoco.agent` dependency -->
+					<!-- see: https://www.jacoco.org/jacoco/trunk/doc/prepare-agent-mojo.html -->
+<!--					<execution>-->
+<!--						<id>jacoco-prepare-agent</id>-->
+<!--						<goals><goal>prepare-agent</goal></goals>-->
+<!--					</execution>-->
+					<!-- Performs offline instrumentation. Note that after execution of test you
+					     must restore original classes with help of "restore-instrumented-classes" goal -->
 					<execution>
 						<id>jacoco-instrument</id>
 						<goals><goal>instrument</goal></goals>
-						<phase>process-test-classes</phase> <!-- or test/package/install -->
+						<phase>process-classes</phase> <!-- or test/package/install -->
 <!--						<configuration>-->
 <!--							<skip>${jacoco.skip.instrument}</skip>-->
 <!--						</configuration>-->
 					</execution>
+					<!-- Restores original classes as they were before offline instrumentation -->
 					<execution>
 						<id>jacoco-restore-instrumented-classes</id>
 						<goals><goal>restore-instrumented-classes</goal></goals>
-						<phase>test</phase>
+						<phase>prepare-package</phase>
 <!--						<configuration>-->
 <!--							<skip>${jacoco.skip.instrument}</skip>-->
 <!--						</configuration>-->
