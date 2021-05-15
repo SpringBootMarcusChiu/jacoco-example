@@ -99,14 +99,11 @@
 					<execution>
 						<id>jacoco-prepare-agent</id>
 						<goals><goal>prepare-agent</goal></goals>
-<!--						<configuration>-->
-<!--							<skip>${jacoco.skip.instrument}</skip>-->
-<!--						</configuration>-->
 					</execution>
 					<execution>
 						<id>jacoco-instrument</id>
 						<goals><goal>instrument</goal></goals>
-						<phase>process-test-classes</phase>
+						<phase>process-test-classes</phase> <!-- or test/package/install -->
 <!--						<configuration>-->
 <!--							<skip>${jacoco.skip.instrument}</skip>-->
 <!--						</configuration>-->
@@ -124,7 +121,6 @@
 						<goals><goal>report</goal></goals>
 						<phase>test</phase>
 						<configuration>
-<!--							<skip>${jacoco.skip.instrument}</skip>-->
 							<dataFile>${project.build.directory}/jacoco.exec</dataFile>
 						</configuration>
 					</execution>
@@ -133,7 +129,6 @@
 						<goals><goal>check</goal></goals>
 						<phase>test</phase>
 						<configuration>
-<!--							<skip>${jacoco.skip.instrument}</skip>-->
 							<rules>
 								<rule>
 									<element>CLASS</element>
