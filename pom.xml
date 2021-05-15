@@ -94,40 +94,35 @@
 				<version>${jacoco-plugin.version}</version>
 				<executions>
 
-					<execution>
-						<id>default-instrument</id>
-						<phase>process-test-classes</phase>
-						<goals>
-							<goal>instrument</goal>
-						</goals>
-<!--						<configuration>-->
-<!--							<skip>${jacoco.skip.instrument}</skip>-->
-<!--						</configuration>-->
-					</execution>
-					<execution>
-						<id>default-restore-instrumented-classes</id>
-						<phase>test</phase>
-						<goals>
-							<goal>restore-instrumented-classes</goal>
-						</goals>
-<!--						<configuration>-->
-<!--							<skip>${jacoco.skip.instrument}</skip>-->
-<!--						</configuration>-->
-					</execution>
-
 <!--					Below is no longer executed even when uncommented out -->
 <!--					Is now needed for JaCoCo build to pass-->
 					<execution>
-						<id>default-prepare-agent</id>
+						<id>jacoco-prepare-agent</id>
 						<goals><goal>prepare-agent</goal></goals>
 <!--						<configuration>-->
 <!--							<skip>${jacoco.skip.instrument}</skip>-->
 <!--						</configuration>-->
 					</execution>
 					<execution>
-						<id>report</id>
+						<id>jacoco-instrument</id>
+						<goals><goal>instrument</goal></goals>
+						<phase>process-test-classes</phase>
+<!--						<configuration>-->
+<!--							<skip>${jacoco.skip.instrument}</skip>-->
+<!--						</configuration>-->
+					</execution>
+					<execution>
+						<id>jacoco-restore-instrumented-classes</id>
+						<goals><goal>restore-instrumented-classes</goal></goals>
 						<phase>test</phase>
+<!--						<configuration>-->
+<!--							<skip>${jacoco.skip.instrument}</skip>-->
+<!--						</configuration>-->
+					</execution>
+					<execution>
+						<id>jacoco-report</id>
 						<goals><goal>report</goal></goals>
+						<phase>test</phase>
 						<configuration>
 <!--							<skip>${jacoco.skip.instrument}</skip>-->
 							<dataFile>${project.build.directory}/jacoco.exec</dataFile>
@@ -135,9 +130,7 @@
 					</execution>
 					<execution>
 						<id>jacoco-check</id>
-						<goals>
-							<goal>check</goal>
-						</goals>
+						<goals><goal>check</goal></goals>
 						<phase>test</phase>
 						<configuration>
 <!--							<skip>${jacoco.skip.instrument}</skip>-->
