@@ -18,8 +18,20 @@
 		<java.version>11</java.version>
 <!--		can be overridden with `mvn clean test -Djacoco.skip.instrument=false` -->
 		<jacoco.skip.instrument>true</jacoco.skip.instrument>
+		<jacoco-plugin.version>0.8.3</jacoco-plugin.version>
 	</properties>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jacoco</groupId>
+				<artifactId>org.jacoco.agent</artifactId>
+				<classifier>runtime</classifier>
+				<scope>runtime</scope>
+				<version>${jacoco-plugin.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -31,46 +43,104 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<includeSystemScope>true</includeSystemScope>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 <!--			maven by default will run test ending with *Test.java with `mvn test` command -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!--suppress MavenModelInspection -->
+					<skipTests>${skip.surefire.tests}</skipTests>
+					<systemPropertyVariables>
+						<jacoco-agent.destfile>${project.build.directory}/jacoco.exec</jacoco-agent.destfile>
+					</systemPropertyVariables>
+				</configuration>
 			</plugin>
 <!--			maven-failsafe-plugin runs tests ending with *IT.java with `mvn verify` command -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-failsafe-plugin</artifactId>-->
+<!--			</plugin>-->
 <!--			jacoco is a code coverage plugin that outputs to /target/jacoco.exe -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.6</version>
+				<version>${jacoco-plugin.version}</version>
 				<executions>
-<!--					Below is no longer executed even when uncommented out -->
-<!--					<execution>-->
-<!--						<id>default-prepare-agent</id>-->
-<!--						<goals><goal>prepare-agent</goal></goals>-->
-<!--					</execution>-->
+
 					<execution>
-						<id>default-report</id>
+						<id>default-instrument</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>instrument</goal>
+						</goals>
+<!--						<configuration>-->
+<!--							<skip>${jacoco.skip.instrument}</skip>-->
+<!--						</configuration>-->
+					</execution>
+					<execution>
+						<id>default-restore-instrumented-classes</id>
+						<phase>test</phase>
+						<goals>
+							<goal>restore-instrumented-classes</goal>
+						</goals>
+<!--						<configuration>-->
+<!--							<skip>${jacoco.skip.instrument}</skip>-->
+<!--						</configuration>-->
+					</execution>
+
+<!--					Below is no longer executed even when uncommented out -->
+<!--					Is now needed for JaCoCo build to pass-->
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals><goal>prepare-agent</goal></goals>
+<!--						<configuration>-->
+<!--							<skip>${jacoco.skip.instrument}</skip>-->
+<!--						</configuration>-->
+					</execution>
+					<execution>
+						<id>report</id>
 						<phase>test</phase>
 						<goals><goal>report</goal></goals>
+						<configuration>
+<!--							<skip>${jacoco.skip.instrument}</skip>-->
+							<dataFile>${project.build.directory}/jacoco.exec</dataFile>
+						</configuration>
 					</execution>
 					<execution>
 						<id>jacoco-check</id>
-						<phase>test</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>
+						<phase>test</phase>
 						<configuration>
+<!--							<skip>${jacoco.skip.instrument}</skip>-->
 							<rules>
 								<rule>
 									<element>CLASS</element>
@@ -85,26 +155,7 @@
 							</rules>
 						</configuration>
 					</execution>
-					<execution>
-						<id>jacoco-instrument</id>
-						<phase>test</phase>
-						<goals>
-							<goal>instrument</goal>
-						</goals>
-						<configuration>
-							<skip>${jacoco.skip.instrument}</skip>
-						</configuration>
-					</execution>
 				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.jacoco</groupId>
-						<artifactId>org.jacoco.agent</artifactId>
-						<version>0.8.6</version>
-						<classifier>runtime</classifier>
-						<scope>runtime</scope>
-					</dependency>
-				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
