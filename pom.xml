@@ -32,11 +32,21 @@
 <!--			</dependency>-->
 <!--		</dependencies>-->
 <!--	</dependencyManagement>-->
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.20</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- TEST DEPENDENCIES -->
 		<!-- either have: `prepare-agent` execution or `org.jacoco.agent` dependency -->
 		<dependency>
 			<groupId>org.jacoco</groupId>
@@ -54,8 +64,10 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
